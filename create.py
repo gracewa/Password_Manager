@@ -1,4 +1,5 @@
 from user import User
+from credentials import Credential
 import random
 import string
 
@@ -22,8 +23,9 @@ def new():
             confirmed_password = str(input())
             if selected_password == confirmed_password:
                 print('Congratulations ' + selected_username + '! Your password manager account has been created')
+                user = User(selected_username, selected_password)
                 with open('users.txt', 'a') as userfile:
-                    userfile.write(selected_username + '@@@' + selected_password + '\n')
+                    userfile.write(user.username + '@@@' + user.password + '\n')
 
             else:
                 print('Account not created because passwords failed to match again! Try again later')
@@ -67,30 +69,31 @@ def new():
                 credential_password = str(input("Please enter the password here: "))
             elif existing_account == 'N' or existing_account == 'n':
                 credential_username = str(input("Please enter a username for your new " + credential_website + " account: "))
-                generated_password = str(input("Would you like Password Manager to generate a password for you? Y/N: " ))
+                generate_password = str(input("Would you like Password Manager to generate a password for you? Y/N: " ))
 
-                if generated_password == 'Y' or generated_password =='y':
+                if generate_password == 'Y' or generate_password =='y':
                     random_string = string.ascii_letters + string.digits
                     credential_password = ''.join((random.choice(random_string) for i in range(8)))
                     print("Your new " + credential_website + " password is: ", credential_password)
-                elif generated_password == 'N' or generated_password =='n':
+                elif generate_password == 'N' or generate_password =='n':
                     credential_password = str(input("Please enter your " + credential_website+ " password here: "))
                 else:
                     print('Invalid Entry')
             else:
                 print('Invalid Entry')
+            credential = Credential(credential_username, credential_password, credential_website)
 
             file_name = str(login_credentials) + '.txt'
             try:
                 with open(file_name, 'a', encoding='utf-8') as usercredentials:
-                    usercredentials.write(credential_website + '@@@' + credential_username + '@@@' + credential_password + '\n')
+                    usercredentials.write(credential.website + '@@@' + credential.username + '@@@' + credential.password + '\n')
                     print('Your Credentials Have Been Saved!')
-                    print('Website: ' + credential_website + '\n' + 'User Name: ' + credential_username + '\n' + "Password: " + credential_password + '\n' )
+                    print('Website: ' + credential.website + '\n' + 'User Name: ' + credential.username + '\n' + "Password: " + credential.password + '\n' )
 
             except FileNotFoundError:
                 with open(file_name, 'a', encoding='utf-8') as usercredentials:
+                    usercredentials.write(credential.website + '@@@' + credential.username + '@@@' + credential.password + '\n')
                     print('Your Credentials Have Been Saved!')
-                    usercredentials.write(credential_website + '@@@' + credential_username + '@@@' + credential_password + '\n')
 
         elif credential_selection == 4:
             file_name = str(login_credentials) + '.txt'

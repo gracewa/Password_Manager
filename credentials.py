@@ -11,11 +11,3 @@ class Credential:
         self.username = username
         self.password = password
         self.website = website
-
-    def save_credential(self):
-
-            '''
-            saves user credentials into credential_list
-            '''
-
-            Credential.credential_list.append(self)
