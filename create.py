@@ -1,6 +1,6 @@
 from user import User
-from random import randint
-import urllib.parse as parse
+import random
+import string
 
 
 def new():
@@ -61,21 +61,36 @@ def new():
         credential_selection = int(input())
         if credential_selection == 3:
             credential_website = str(input("Please enter the website url here: "))
-            parsed_url = parse.urlparse(credential_website)
-            parsed_domain = parsed_url.netloc
-            credential_username = str(input("Please enter your " + parsed_domain + " user name: "))
-            credential_password = str(input("Please enter the password here: "))
+            existing_account = str(input("Do you already have a " + credential_website + " account? Y/N: "))
+            if existing_account == 'Y' or existing_account == 'y':
+                credential_username = str(input("Please enter your " + credential_website + " user name: "))
+                credential_password = str(input("Please enter the password here: "))
+            elif existing_account == 'N' or existing_account == 'n':
+                credential_username = str(input("Please enter a username for your new " + credential_website + " account: "))
+                generated_password = str(input("Would you like Password Manager to generate a password for you? Y/N: " ))
+
+                if generated_password == 'Y' or generated_password =='y':
+                    random_string = string.ascii_letters + string.digits
+                    credential_password = ''.join((random.choice(random_string) for i in range(8)))
+                    print("Your new " + credential_website + " password is: ", credential_password)
+                elif generated_password == 'N' or generated_password =='n':
+                    credential_password = str(input("Please enter your " + credential_website+ " password here: "))
+                else:
+                    print('Invalid Entry')
+            else:
+                print('Invalid Entry')
 
             file_name = str(login_credentials) + '.txt'
             try:
                 with open(file_name, 'a', encoding='utf-8') as usercredentials:
                     usercredentials.write(credential_website + '@@@' + credential_username + '@@@' + credential_password + '\n')
-                    print('Credentials Saved!')
+                    print('Your Credentials Have Been Saved!')
+                    print('Website: ' + credential_website + '\n' + 'User Name: ' + credential_username + '\n' + "Password: " + credential_password + '\n' )
 
             except FileNotFoundError:
                 with open(file_name, 'a', encoding='utf-8') as usercredentials:
+                    print('Your Credentials Have Been Saved!')
                     usercredentials.write(credential_website + '@@@' + credential_username + '@@@' + credential_password + '\n')
-                    print('Credentials Saved!')
 
         elif credential_selection == 4:
             file_name = str(login_credentials) + '.txt'
